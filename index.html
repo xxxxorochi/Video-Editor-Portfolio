@@ -134,7 +134,7 @@
     <nav class="fixed top-0 w-full z-50 bg-black/90 border-b border-themeYellow/30 backdrop-blur-sm">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex justify-between h-16 items-center">
-                <div class="text-xl font-bold text-themeYellow tracking-widest">
+                <div class="text-xl font-bold text-themeYellow tracking-widest cursor-pointer" onclick="showPage('home')">
                     <i class="fas fa-video mr-2"></i>PORTFOLIO
                 </div>
                 <div class="hidden md:flex space-x-8">
@@ -145,9 +145,18 @@
                     <button onclick="showPage('contact')" class="nav-item text-gray-300 hover:text-white transition px-3 py-2 text-sm font-medium uppercase tracking-wider">Contact</button>
                 </div>
                 <!-- Mobile Menu Button (Simplified) -->
-                <div class="md:hidden text-themeYellow text-2xl">
+                <div class="md:hidden text-themeYellow text-2xl cursor-pointer p-2" onclick="toggleMobileMenu()">
                     <i class="fas fa-bars"></i>
                 </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-black/95 absolute w-full left-0 top-16 border-b border-themeYellow/30 shadow-lg">
+            <div class="flex flex-col px-4 py-4 space-y-4 text-center">
+                <button onclick="showPage('home'); toggleMobileMenu()" class="nav-item mobile-link block text-gray-300 hover:text-themeYellow py-2 uppercase tracking-widest border-b border-gray-800">Home</button>
+                <button onclick="showPage('about'); toggleMobileMenu()" class="nav-item mobile-link block text-gray-300 hover:text-themeYellow py-2 uppercase tracking-widest border-b border-gray-800">About</button>
+                <button onclick="showPage('skills'); toggleMobileMenu()" class="nav-item mobile-link block text-gray-300 hover:text-themeYellow py-2 uppercase tracking-widest border-b border-gray-800">Skills</button>
+                <button onclick="showPage('portfolio'); toggleMobileMenu()" class="nav-item mobile-link block text-gray-300 hover:text-themeYellow py-2 uppercase tracking-widest border-b border-gray-800">Works</button>
+                <button onclick="showPage('contact'); toggleMobileMenu()" class="nav-item mobile-link block text-gray-300 hover:text-themeYellow py-2 uppercase tracking-widest">Contact</button>
             </div>
         </div>
     </nav>
@@ -450,6 +459,11 @@
     </footer>
 
     <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            // สลับการแสดงผล (ถ้าซ่อนอยู่ก็แสดง ถ้าแสดงอยู่ก็ซ่อน)
+            menu.classList.toggle('hidden');
+        }
         // --- Page Navigation Logic ---
         function showPage(pageId) {
             // Hide all sections
@@ -598,4 +612,5 @@
 </body>
 
 </html>
+
 
