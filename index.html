@@ -140,6 +140,7 @@
                 <div class="hidden md:flex space-x-8">
                     <button onclick="showPage('home')" class="nav-item active text-gray-300 hover:text-white transition px-3 py-2 text-sm font-medium uppercase tracking-wider">Home</button>
                     <button onclick="showPage('about')" class="nav-item text-gray-300 hover:text-white transition px-3 py-2 text-sm font-medium uppercase tracking-wider">About</button>
+                    <button onclick="showPage('experience')" class="nav-item text-gray-300 hover:text-white transition px-3 py-2 text-sm font-medium uppercase tracking-wider">Experience</button>
                     <button onclick="showPage('skills')" class="nav-item text-gray-300 hover:text-white transition px-3 py-2 text-sm font-medium uppercase tracking-wider">Skills</button>
                     <button onclick="showPage('portfolio')" class="nav-item text-gray-300 hover:text-white transition px-3 py-2 text-sm font-medium uppercase tracking-wider">Works</button>
                     <button onclick="showPage('contact')" class="nav-item text-gray-300 hover:text-white transition px-3 py-2 text-sm font-medium uppercase tracking-wider">Contact</button>
@@ -154,6 +155,7 @@
             <div class="flex flex-col px-4 py-4 space-y-4 text-center">
                 <button onclick="showPage('home'); toggleMobileMenu()" class="nav-item mobile-link block text-gray-300 hover:text-themeYellow py-2 uppercase tracking-widest border-b border-gray-800">Home</button>
                 <button onclick="showPage('about'); toggleMobileMenu()" class="nav-item mobile-link block text-gray-300 hover:text-themeYellow py-2 uppercase tracking-widest border-b border-gray-800">About</button>
+                <button onclick="showPage('experience'); toggleMobileMenu()" class="nav-item mobile-link block text-gray-300 hover:text-themeYellow py-2 uppercase tracking-widest border-b border-gray-800">Experience</button>
                 <button onclick="showPage('skills'); toggleMobileMenu()" class="nav-item mobile-link block text-gray-300 hover:text-themeYellow py-2 uppercase tracking-widest border-b border-gray-800">Skills</button>
                 <button onclick="showPage('portfolio'); toggleMobileMenu()" class="nav-item mobile-link block text-gray-300 hover:text-themeYellow py-2 uppercase tracking-widest border-b border-gray-800">Works</button>
                 <button onclick="showPage('contact'); toggleMobileMenu()" class="nav-item mobile-link block text-gray-300 hover:text-themeYellow py-2 uppercase tracking-widest">Contact</button>
@@ -225,6 +227,65 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+          <!-- Page 7: Experiece -->
+        <section id="experience" class="page-section hidden max-w-4xl mx-auto mt-10 fade-in">
+            <div class="glass-card p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-themeYellow mb-8 border-b border-gray-700 pb-4">
+                    <i class="fas fa-briefcase mr-3"></i>ประสบการณ์ทำงาน
+                </h2>
+
+                <!-- Experience Item 1 -->
+                <div class="flex flex-col md:flex-row gap-6 mb-10 border-b border-gray-800 pb-10 last:border-0 last:mb-0 last:pb-0 items-start">
+                    <!-- Company Image (Left) -->
+                    <div class="w-full md:w-48 flex-shrink-0">
+                        <div class="aspect-square md:aspect-video md:h-32 rounded overflow-hidden border border-gray-700 bg-themeBlack group">
+                            <img src="logo2.jpg" 
+                                 class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500 hover:scale-105" 
+                                 alt="Company Logo">
+                        </div>
+                    </div>
+                    <!-- Company Details (Right) -->
+                    <div class="flex-1 ml-4 md:ml-8">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
+                            <h3 class="text-2xl font-bold text-white group-hover:text-themeYellow transition">YouTube Channel "l3o0kkung"</h3>
+                            <span class="bg-themeYellow/20 text-themeYellow text-xs px-3 py-1 rounded-full border border-themeYellow/50 mt-2 md:mt-0 inline-block w-fit">2023 - ปัจจุบัน</span>
+                        </div>
+                        <h4 class="text-themeYellow font-semibold mb-3">ตำแหน่ง: Content Creator</h4>
+                        <p class="text-gray-400 leading-relaxed text-sm">
+                            - คิดคอนเทนต์ประจำช่อง เขียนบท วาง Timeline ในการปล่อยคลิปวิดีโอ<br>
+                            - Voice over ในวิดีโอทุกตัว พร้อมทั้งอัดและค้นหา Footage ด้วยตัวเองทั้งหมด<br>
+                            - ดูแลงานตัดต่อรวมไปถึงภาพกราฟฟิคปกคลิป ครบจบ Pre Pro Post-Production
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Experience Item 2 -->
+                <div class="flex flex-col md:flex-row gap-6 mb-10 border-b border-gray-800 pb-10 last:border-0 last:mb-0 last:pb-0 items-start">
+                    <!-- Company Image (Left) -->
+                    <div class="w-full md:w-48 flex-shrink-0">
+                        <div class="aspect-square md:aspect-video md:h-32 rounded overflow-hidden border border-gray-700 bg-themeBlack group">
+                            <img src="logo1.jpg" 
+                                 class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500 hover:scale-105" 
+                                 alt="Company Logo">
+                        </div>
+                    </div>
+                    <!-- Company Details (Right) -->
+                    <div class="flex-1 ml-4 md:ml-8">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
+                            <h3 class="text-2xl font-bold text-white group-hover:text-themeYellow transition">Mission To The Moon Media</h3>
+                            <span class="bg-gray-800 text-gray-300 text-xs px-3 py-1 rounded-full border border-gray-600 mt-2 md:mt-0 inline-block w-fit">2022 - 2023(4 months)</span>
+                        </div>
+                        <h4 class="text-themeYellow font-semibold mb-3">ตำแหน่ง: Junior Video Editor (Intern)</h4>
+                        <p class="text-gray-400 leading-relaxed text-sm">
+                            - รับผิดชอบงานตัดต่อรายการออนไลน์ช่อง Youtube ยอดผู้ติดตามมากกว่า 1 ล้าน Subscriber<br>
+                            - ทำงานประสานกับทีม Content และ Sound Engineer<br>
+                            - มีส่วนร่วมในการปรับแต่งแนวทางของวิดีโอในช่อง YouTube ให้สามารถจับกลุ่มเป้าหมายได้หลากหลายมากขึ้น
+                        </p>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -612,6 +673,7 @@
 </body>
 
 </html>
+
 
 
 
