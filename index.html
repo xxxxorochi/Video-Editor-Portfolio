@@ -41,7 +41,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* อยู่ด้านหลังสุด */
+            z-index: 1; /* อยู่ด้านหลังสุด */
         }
 
         /* Glitch Effect for Title */
@@ -577,7 +577,7 @@
             ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height);
             ctx.strokeStyle = gradient; 
             ctx.lineWidth = 2; // หนาขึ้น
-            ctx.shadowBlur = 10; // มีแสงฟุ้ง
+            ctx.shadowBlur = 5; // มีแสงฟุ้ง
             ctx.shadowColor = config.primaryColor;
             ctx.stroke();
             ctx.shadowBlur = 0;
@@ -612,5 +612,6 @@
 </body>
 
 </html>
+
 
 
