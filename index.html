@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Editor Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        themeYellow: '#FFD700',
+                        themeBlack: '#050505',
+                        themeDarkGray: '#1a1a1a',
+                        themeGray: '#333333'
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #050505;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Canvas Background */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* อยู่ด้านหลังสุด */
+        }
+
+        /* Glitch Effect for Title */
+        .glitch {
+            position: relative;
+            color: white;
+            font-weight: bold;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 #FFD700;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(11px, 9999px, 94px, 0); }
+            10% { clip: rect(56px, 9999px, 16px, 0); }
+            20% { clip: rect(26px, 9999px, 86px, 0); }
+            30% { clip: rect(8px, 9999px, 60px, 0); }
+            40% { clip: rect(98px, 9999px, 5px, 0); }
+            50% { clip: rect(4px, 9999px, 63px, 0); }
+            60% { clip: rect(32px, 9999px, 20px, 0); }
+            70% { clip: rect(81px, 9999px, 32px, 0); }
+            80% { clip: rect(17px, 9999px, 73px, 0); }
+            90% { clip: rect(54px, 9999px, 90px, 0); }
+            100% { clip: rect(15px, 9999px, 69px, 0); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFD700;
+            border-radius: 4px;
+        }
+
+        .nav-item.active {
+            color: #FFD700;
+            border-bottom: 2px solid #FFD700;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .skill-bar-fill {
+            transition: width 1.5s ease-in-out;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Animation -->
+    <div id="canvas-container">
+        <canvas id="bgCanvas"></canvas>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-black/90 border-b border-themeYellow/30 backdrop-blur-sm">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between h-16 items-center">
+                <div class="text-xl font-bold text-themeYellow tracking-widest">
+                    <i class="fas fa-video mr-2"></i>PORTFOLIO
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="showPage('home')" class="nav-item active text-gray-300 hover:text-white transition px-3 py-2 text-sm font-medium uppercase tracking-wider">Home</button>
+                    <button onclick="showPage('about')" class="nav-item text-gray-300 hover:text-white transition px-3 py-2 text-sm font-medium uppercase tracking-wider">About</button>
+                    <button onclick="showPage('skills')" class="nav-item text-gray-300 hover:text-white transition px-3 py-2 text-sm font-medium uppercase tracking-wider">Skills</button>
+                    <button onclick="showPage('portfolio')" class="nav-item text-gray-300 hover:text-white transition px-3 py-2 text-sm font-medium uppercase tracking-wider">Works</button>
+                    <button onclick="showPage('contact')" class="nav-item text-gray-300 hover:text-white transition px-3 py-2 text-sm font-medium uppercase tracking-wider">Contact</button>
+                </div>
+                <!-- Mobile Menu Button (Simplified) -->
+                <div class="md:hidden text-themeYellow text-2xl">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="relative z-10 pt-20 px-4 h-full overflow-y-auto pb-20">
+        
+        <!-- Page 1: Home -->
+        <section id="home" class="page-section min-h-[85vh] flex flex-col justify-center items-center text-center fade-in">
+            <!-- Profile Image Placeholder -->
+            <div class="relative w-48 h-48 mb-8 group">
+                <div class="absolute inset-0 bg-themeYellow rounded-full opacity-20 blur-xl group-hover:opacity-40 transition duration-500"></div>
+                <img src="photo1.PNG" 
+                     alt="Profile Picture" 
+                     class="relative w-full h-full object-cover rounded-full border-4 border-themeYellow shadow-[0_0_20px_rgba(255,215,0,0.3)]">
+                <!-- Decorative Elements -->
+                <div class="absolute -top-4 -right-4 text-themeYellow text-2xl animate-bounce"><i class="fas fa-cut"></i></div>
+                <div class="absolute -bottom-2 -left-2 text-white text-xl"><i class="fas fa-film"></i></div>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-bold mb-4 glitch" data-text="Book Phatsakorn">Book Phatsakorn</h1>
+            <div class="bg-themeYellow/10 border border-themeYellow text-themeYellow px-6 py-2 rounded text-lg tracking-[0.2em] font-semibold mb-8">
+                VIDEO EDITOR & CONTENT CREATOR
+            </div>
+            <p class="text-gray-400 max-w-lg mx-auto mb-8">
+                นักตัดต่อวิดีโอผู้มีความฝัน สร้างสรรค์ผลงานตระการตา 
+                <br>พร้อมกับถ้อยคำในใจที่ดังก้องว่า "ฉันจะเป็นราชาตัดต่อให้ได้เลย!"
+            </p>
+            <button onclick="showPage('portfolio')" class="bg-themeYellow text-black font-bold py-3 px-8 rounded hover:bg-yellow-400 transition shadow-[0_0_15px_rgba(255,215,0,0.5)] transform hover:scale-105">
+                ดูผลงานของฉัน
+            </button>
+        </section>
+
+        <!-- Page 2: About -->
+        <section id="about" class="page-section hidden max-w-4xl mx-auto mt-10 fade-in">
+            <div class="glass-card p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-themeYellow mb-6 border-b border-gray-700 pb-4">
+                    <i class="fas fa-user-circle mr-3"></i>ประวัติส่วนตัว
+                </h2>
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="md:w-1/3">
+                        <img src="pro.jpg" class="w-full rounded border border-gray-700 shadow-lg">
+                    </div>
+                    <div class="md:w-2/3 text-gray-300 leading-relaxed">
+                        <p class="mb-4 text-lg">
+                            สวัสดีครับ ผมชื่อ <span class="text-white font-bold">[พัสกรณ์ ดวงติ๊บ]</span> 
+                            เป็นคนที่ชอบในการตัดต่อและเล่าเรื่องผ่านวิดีโอ มีความเข้าใจในธรรมชาติของงานวิดีโอเป็นอย่างดี
+                        </p>
+                        <p class="mb-4">
+                            จบการศึกษาจาก: <span class="text-white">[มหาวิทยาลัยเชียงใหม่]</span><br>
+                            คณะ/สาขา: <span class="text-white">[คณะการสื่อสารมวลชน สาขาวิชาการสื่อสารมวลชน]</span>
+                        </p>
+                        <p class="mb-6">
+                            ด้วยประสบการณ์กว่า <span class="text-themeYellow">[2] ปี</span> ในสายงานตัดต่อ(โปรเจคส่วนตัว) และรับผิดชอบงานด้านตัดต่อนับตั้งแต่เริ่มศึกษาเป็นระยะเวลารวม <span class="text-themeYellow">[6] ปี</span> (งานมหาลัย/ฝึกงาน) ผมได้ร่วมงานกับหลากหลายโปรเจกต์ ตั้งแต่ Music Video, โฆษณา, ไปจนถึง Content สำหรับ Social Media จุดมุ่งหมายของผมคือการส่งมอบงานที่ไม่ใช่แค่ "เสร็จ" แต่ต้อง "สร้างความประทับใจ"
+                        </p>
+                        
+                        <div class="grid grid-cols-2 gap-4 mt-8">
+                            <div class="bg-themeBlack/50 p-4 rounded border-l-4 border-themeYellow">
+                                <h3 class="text-white font-bold">อายุ</h3>
+                                <p>[25] ปี</p>
+                            </div>
+                            <div class="bg-themeBlack/50 p-4 rounded border-l-4 border-themeYellow">
+                                <h3 class="text-white font-bold">ที่อยู่</h3>
+                                <p>[เชียงใหม่, ประเทศไทย]</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page 3: Skills -->
+        <section id="skills" class="page-section hidden max-w-4xl mx-auto mt-10 fade-in">
+            <div class="glass-card p-8 rounded-lg mb-8">
+                <h2 class="text-3xl font-bold text-themeYellow mb-8 border-b border-gray-700 pb-4">
+                    <i class="fas fa-tools mr-3"></i>ทักษะ & โปรแกรม
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <!-- Software Skills -->
+                    <div>
+                        <h3 class="text-xl text-white mb-6 font-semibold flex items-center">
+                            <i class="fas fa-laptop-code text-themeYellow mr-2"></i> Software Proficiency
+                        </h3>
+                        
+                        <!-- Skill Item -->
+                        <div class="mb-5">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-300">Adobe Premiere Pro</span>
+                                <span class="text-themeYellow">เชี่ยวชาญ</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                <div class="skill-bar-fill bg-themeYellow h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Skill Item -->
+                        <div class="mb-5">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-300">Adobe After Effects</span>
+                                <span class="text-themeYellow">เริ่มต้น</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                <div class="skill-bar-fill bg-themeYellow h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Skill Item -->
+                        <div class="mb-5">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-300">DaVinci Resolve (Color Grading)</span>
+                                <span class="text-themeYellow">ปานกลาง</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                <div class="skill-bar-fill bg-themeYellow h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Skill Item -->
+                        <div class="mb-5">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-300">Photoshop / Illustrator</span>
+                                <span class="text-themeYellow">ปานกลาง</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                <div class="skill-bar-fill bg-themeYellow h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Soft Skills / Strengths -->
+                    <div>
+                        <h3 class="text-xl text-white mb-6 font-semibold flex items-center">
+                            <i class="fas fa-star text-themeYellow mr-2"></i> Soft skills
+                        </h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="bg-themeBlack/40 p-4 rounded border border-gray-700 flex items-center">
+                                <i class="fas fa-bolt text-2xl text-themeYellow w-12"></i>
+                                <div>
+                                    <h4 class="font-bold text-white">บริหารเวลาเป็น (Time management)</h4>
+                                    <p class="text-sm text-gray-400">ส่งงานตรงเวลา บริหารจัดการเวลาได้ดี</p>
+                                </div>
+                            </div>
+                            <div class="bg-themeBlack/40 p-4 rounded border border-gray-700 flex items-center">
+                                <i class="fas fa-eye text-2xl text-themeYellow w-12"></i>
+                                <div>
+                                    <h4 class="font-bold text-white">ทำงานเป็นทีม (Team collaboration)</h4>
+                                    <p class="text-sm text-gray-400">สามารถร่วมงานเป็นทีมได้อย่างมีประสิทธิภาพ</p>
+                                </div>
+                            </div>
+                            <div class="bg-themeBlack/40 p-4 rounded border border-gray-700 flex items-center">
+                                <i class="fas fa-lightbulb text-2xl text-themeYellow w-12"></i>
+                                <div>
+                                    <h4 class="font-bold text-white">มีทักษะการสื่อสาร (Presentation skills)</h4>
+                                    <p class="text-sm text-gray-400">สามารถนำเสนอและสื่อสารได้ดี (ออกกล้องได้)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page 4-5: Portfolio (เพิ่มเป็น 6 ช่องตามที่ขอ) -->
+        <section id="portfolio" class="page-section hidden max-w-6xl mx-auto mt-10 fade-in">
+            <h2 class="text-4xl font-bold text-center text-themeYellow mb-2">PORTFOLIO</h2>
+            <p class="text-center text-gray-400 mb-10">ผลงานที่ผ่านมาบางส่วนของผม</p>
+
+            <!-- Filter Categories -->
+            <div class="flex justify-center space-x-4 mb-8">
+                <button class="text-black bg-themeYellow px-4 py-1 rounded-full text-sm font-bold">All</button>
+                <button class="text-gray-300 hover:text-white border border-gray-600 px-4 py-1 rounded-full text-sm">Vlog</button>
+                <button class="text-gray-300 hover:text-white border border-gray-600 px-4 py-1 rounded-full text-sm">Music Video</button>
+                <button class="text-gray-300 hover:text-white border border-gray-600 px-4 py-1 rounded-full text-sm">Social Media</button>
+            </div>
+
+            <!-- Portfolio Grid (3 columns x 2 rows = 6 items) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Portfolio Item 1 -->
+                <div class="group relative overflow-hidden rounded-lg cursor-pointer border border-gray-800">
+                    <img src="p1.jpg" alt="Project 1" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-center items-center text-center p-4">
+                        <h3 class="text-themeYellow text-xl font-bold mb-2">Vlog</h3>
+                        <p class="text-gray-300 text-sm">Travel / Editing / Color Grading</p>
+                        <!-- [GUIDE]: เปลี่ยน href="#" เป็นลิงก์ผลงานของคุณ เช่น href="https://youtube.com/..." -->
+                        <a href="https://youtu.be/WWTlBSLiZ7E" target="_blank" class="mt-4 inline-block border border-themeYellow text-themeYellow px-4 py-2 text-sm hover:bg-themeYellow hover:text-black transition">View Details</a>
+                    </div>
+                </div>
+
+                <!-- Portfolio Item 2 -->
+                <div class="group relative overflow-hidden rounded-lg cursor-pointer border border-gray-800">
+                    <img src="p2.jpg" alt="Project 2" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-center items-center text-center p-4">
+                        <h3 class="text-themeYellow text-xl font-bold mb-2">Vlog</h3>
+                        <p class="text-gray-300 text-sm">Travel / Editing / Color Grading</p>
+                        <!-- [GUIDE]: ใส่ลิงก์ผลงานที่นี่ -->
+                        <a href="https://youtu.be/6tXT-r69dIs" target="_blank" class="mt-4 inline-block border border-themeYellow text-themeYellow px-4 py-2 text-sm hover:bg-themeYellow hover:text-black transition">View Details</a>
+                    </div>
+                </div>
+
+                <!-- Portfolio Item 3 -->
+                <div class="group relative overflow-hidden rounded-lg cursor-pointer border border-gray-800">
+                    <img src="p4.png" alt="Project 3" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-center items-center text-center p-4">
+                        <h3 class="text-themeYellow text-xl font-bold mb-2">Music Video</h3>
+                        <p class="text-gray-300 text-sm">Shooting / Editor / Director</p>
+                        <!-- [GUIDE]: ใส่ลิงก์ผลงานที่นี่ -->
+                        <a href="https://youtu.be/olCN98qKVVQ" target="_blank" class="mt-4 inline-block border border-themeYellow text-themeYellow px-4 py-2 text-sm hover:bg-themeYellow hover:text-black transition">View Details</a>
+                    </div>
+                </div>
+
+                <!-- Portfolio Item 4 -->
+                <div class="group relative overflow-hidden rounded-lg cursor-pointer border border-gray-800">
+                    <img src="p3.jpg" alt="Project 4" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-center items-center text-center p-4">
+                        <h3 class="text-themeYellow text-xl font-bold mb-2">Podcast / Motivation</h3>
+                        <p class="text-gray-300 text-sm">Editor / Color Grading</p>
+                        <!-- [GUIDE]: ใส่ลิงก์ผลงานที่นี่ -->
+                        <a href="https://youtu.be/etglFrAnWSs" target="_blank" class="mt-4 inline-block border border-themeYellow text-themeYellow px-4 py-2 text-sm hover:bg-themeYellow hover:text-black transition">View Details</a>
+                    </div>
+                </div>
+
+                <!-- Portfolio Item 5 (New) -->
+                <div class="group relative overflow-hidden rounded-lg cursor-pointer border border-gray-800">
+                    <img src="p0.jpg" alt="Project 5" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-center items-center text-center p-4">
+                        <h3 class="text-themeYellow text-xl font-bold mb-2">Gaming Content</h3>
+                        <p class="text-gray-300 text-sm">Director / Script Writer / Editor / Creative</p>
+                        <!-- [GUIDE]: ใส่ลิงก์ผลงานที่นี่ -->
+                        <a href="https://youtube.com/playlist?list=PL9NSVJXc3-9DvNUhQ7s_47gu4lDQNjxZk&si=HbqzIppb3A91pxlF" target="_blank" class="mt-4 inline-block border border-themeYellow text-themeYellow px-4 py-2 text-sm hover:bg-themeYellow hover:text-black transition">View Details</a>
+                    </div>
+                </div>
+
+                <!-- Portfolio Item 6 (New) -->
+                <div class="group relative overflow-hidden rounded-lg cursor-pointer border border-gray-800">
+                    <img src="p6.jpg" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-center items-center text-center p-4">
+                        <h3 class="text-themeYellow text-xl font-bold mb-2">ผลงานอื่น ๆ</h3>
+                        <p class="text-gray-300 text-sm">ผลงานอื่นๆ บางส่วน</p>
+                        <!-- [GUIDE]: ใส่ลิงก์ผลงานที่นี่ -->
+                        <a href="https://youtube.com/playlist?list=PLzKuN5FZiAz9aIQpWjPaIN4ok7kYBzxhF&si=mKVxLGvFdO-NL5Xp" target="_blank" class="mt-4 inline-block border border-themeYellow text-themeYellow px-4 py-2 text-sm hover:bg-themeYellow hover:text-black transition">View Details</a>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+
+        <!-- Page 6: Contact -->
+        <section id="contact" class="page-section hidden max-w-4xl mx-auto mt-10 fade-in">
+            <div class="glass-card p-10 rounded-lg text-center">
+                <h2 class="text-4xl font-bold text-themeYellow mb-8">
+                    ร่วมงานกับผม
+                </h2>
+                <p class="text-gray-300 text-lg mb-10 max-w-2xl mx-auto">
+                    สนใจจ้างงาน สอบถามราคา หรือพูดคุยเกี่ยวกับโปรเจกต์ของคุณ 
+                    สามารถติดต่อผมได้ผ่านช่องทางด้านล่างนี้ครับ
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <!-- Contact Box: Phone -->
+                    <!-- [GUIDE]: เปลี่ยน href เป็นเบอร์โทร เช่น href="tel:0812345678" -->
+                    <a href="tel:0924854719" class="block bg-themeBlack/50 p-6 rounded border border-gray-700 hover:border-themeYellow transition group">
+                        <i class="fas fa-phone-alt text-3xl text-gray-400 group-hover:text-themeYellow mb-4 transition"></i>
+                        <h3 class="text-white font-bold mb-2">เบอร์โทรศัพท์</h3>
+                        <p class="text-gray-400">0924854719</p>
+                    </a>
+                    
+                    <!-- Contact Box: Email -->
+                    <!-- [GUIDE]: เปลี่ยน href เป็นอีเมล เช่น href="mailto:your@email.com" -->
+                    <a href="mailto:l3o0kkungofficial@gmail.com" class="block bg-themeBlack/50 p-6 rounded border border-gray-700 hover:border-themeYellow transition group">
+                        <i class="fas fa-envelope text-3xl text-gray-400 group-hover:text-themeYellow mb-4 transition"></i>
+                        <h3 class="text-white font-bold mb-2">อีเมล</h3>
+                        <p class="text-gray-400">l3o0kkungofficial@gmail.com</p>
+                    </a>
+
+                    <!-- Contact Box: Line -->
+                    <!-- [GUIDE]: เปลี่ยน href เป็นลิงก์ไลน์ เช่น href="https://line.me/ti/p/~yourid" -->
+                    <a href="https://line.me/ti/p/~l3o0kkung" target="_blank" class="block bg-themeBlack/50 p-6 rounded border border-gray-700 hover:border-themeYellow transition group">
+                        <i class="fab fa-line text-3xl text-gray-400 group-hover:text-themeYellow mb-4 transition"></i>
+                        <h3 class="text-white font-bold mb-2">Line ID</h3>
+                        <p class="text-gray-400">@l3o0kkung</p>
+                    </a>
+                </div>
+
+                <div class="flex justify-center space-x-6 text-2xl">
+                    <!-- [GUIDE]: ใส่ลิงก์ Social Media ของคุณที่นี่ -->
+                    <a href="https://www.facebook.com/Bo0kKuNG" target="_blank" class="text-gray-400 hover:text-blue-500 transition"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/b_bookbx/?hl=th" target="_blank" class="text-gray-400 hover:text-pink-500 transition"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/@Bo0kKuNG" target="_blank" class="text-gray-400 hover:text-red-600 transition"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="fixed bottom-0 w-full text-center py-2 text-xs text-gray-600 z-50 pointer-events-none">
+        &copy; 2025 Video Editor Portfolio. All Rights Reserved.
+    </footer>
+
+    <script>
+        // --- Page Navigation Logic ---
+        function showPage(pageId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.add('hidden');
+                section.classList.remove('fade-in'); // Reset animation
+            });
+            
+            // Remove active class from nav items
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('active', 'text-themeYellow', 'border-bottom');
+                btn.classList.add('text-gray-300');
+            });
+
+            // Show selected section
+            const targetSection = document.getElementById(pageId);
+            targetSection.classList.remove('hidden');
+            // Trigger reflow to restart animation
+            void targetSection.offsetWidth; 
+            targetSection.classList.add('fade-in');
+
+            // Set active nav item
+            const activeBtns = Array.from(document.querySelectorAll('.nav-item')).filter(btn => btn.getAttribute('onclick').includes(pageId));
+            activeBtns.forEach(btn => {
+                btn.classList.add('active', 'text-themeYellow');
+                btn.classList.remove('text-gray-300');
+            });
+        }
+
+        // --- Background Animation Logic (Revised for high visibility) ---
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        
+        const config = {
+            bgColor: '#050505',
+            gridColor: '#1a1a1a', // เข้มขึ้น
+            primaryColor: '#FFD700',
+            secondaryColor: '#333333',
+            trackCount: 6,
+            speed: 2 // เร็วขึ้นเหมือนต้นฉบับ
+        };
+
+        let tracks = [];
+        let time = 0;
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initTracks();
+        }
+
+        class Clip {
+            constructor(y, height) {
+                this.x = Math.random() * width + width;
+                this.y = y;
+                this.w = Math.random() * 200 + 50;
+                this.h = height - 4;
+                this.color = Math.random() > 0.7 ? config.primaryColor : config.secondaryColor;
+                // ปรับ Opacity ให้ชัดเจนขึ้น (0.3 - 0.8)
+                this.opacity = Math.random() * 0.5 + 0.3; 
+            }
+            update() { this.x -= config.speed; }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.fillRect(this.x, this.y + 2, this.w, this.h);
+                
+                // เพิ่มรายละเอียด "หู" คลิป
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                ctx.fillRect(this.x, this.y + 2, 2, this.h);
+                ctx.fillRect(this.x + this.w - 2, this.y + 2, 2, this.h);
+
+                ctx.globalAlpha = 1.0;
+            }
+        }
+
+        function initTracks() {
+            tracks = [];
+            const trackHeight = height / (config.trackCount + 2);
+            const startY = trackHeight;
+            for (let i = 0; i < config.trackCount; i++) {
+                tracks.push({ y: startY + (i * trackHeight), h: trackHeight, clips: [] });
+            }
+        }
+
+        function drawGrid() {
+            ctx.strokeStyle = config.gridColor;
+            ctx.lineWidth = 1;
+            const markerSpacing = 100;
+            const offset = (time * config.speed) % markerSpacing;
+            for (let x = -offset; x < width; x += markerSpacing) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+            }
+            tracks.forEach(track => {
+                ctx.beginPath(); ctx.moveTo(0, track.y); ctx.lineTo(width, track.y);
+                ctx.strokeStyle = '#111'; ctx.stroke();
+            });
+        }
+
+        function drawPlayhead() {
+            const x = width / 2;
+            const gradient = ctx.createLinearGradient(x, 0, x, height);
+            gradient.addColorStop(0, 'rgba(255, 215, 0, 0)');
+            gradient.addColorStop(0.2, config.primaryColor); // ชัดเจน
+            gradient.addColorStop(0.8, config.primaryColor); // ชัดเจน
+            gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height);
+            ctx.strokeStyle = gradient; 
+            ctx.lineWidth = 2; // หนาขึ้น
+            ctx.shadowBlur = 10; // มีแสงฟุ้ง
+            ctx.shadowColor = config.primaryColor;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            // หัวลูกศรด้านบน
+            ctx.beginPath();
+            ctx.moveTo(x - 10, 0);
+            ctx.lineTo(x + 10, 0);
+            ctx.lineTo(x, 15);
+            ctx.fillStyle = config.primaryColor;
+            ctx.fill();
+        }
+
+        function animate() {
+            ctx.fillStyle = config.bgColor;
+            ctx.fillRect(0, 0, width, height);
+            time++;
+            drawGrid();
+            tracks.forEach(track => {
+                if (Math.random() < 0.02) track.clips.push(new Clip(track.y, track.h));
+                track.clips = track.clips.filter(c => c.x + c.w > 0);
+                track.clips.forEach(clip => { clip.update(); clip.draw(); });
+            });
+            drawPlayhead();
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        animate();
+    </script>
+</body>
+</html>
